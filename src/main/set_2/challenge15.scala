@@ -7,11 +7,12 @@ import javax.crypto.BadPaddingException
   */
 object challenge15 extends App {
 
-  def validatePKCS7(str: Array[Byte]) = {
+  def validatePKCS7(str: Array[Byte]): Array[Byte] = {
     val num_pad: Int = str.last.toInt
     val pad_bytes: Array[Byte] = str.takeRight(num_pad)
 
     if (valid_padding(pad_bytes, num_pad)) {
+      // println("Debug: Padded PT = " + str.toList)
       str.dropRight(num_pad)
     } else {
       throw new BadPaddingException("String has invalid PKCS7 padding")
@@ -19,7 +20,7 @@ object challenge15 extends App {
   }
 
   def valid_padding(pad_bytes: Array[Byte], num_pad: Int): Boolean = {
-    (pad_bytes.length == num_pad) && pad_bytes.forall(e => e == num_pad)
+    (num_pad > 0) && (pad_bytes.length == num_pad) && pad_bytes.forall(e => e == num_pad)
   }
 
   //

@@ -9,7 +9,7 @@ object challenge2 extends App {
    * Takes a hex string and returns a ByteArray
    */
   def hex2ba(hex_str: String): Array[Byte] = {
-    val hex_ba: Array[Byte] = hex_str.sliding(2, 2).map(
+    val hex_ba: Array[Byte] = hex_str.grouped(2).map(
       (hex_pair: String) => Integer.decode("0x" + hex_pair).byteValue()
     ).toArray
     hex_ba
@@ -27,11 +27,14 @@ object challenge2 extends App {
    * the XOR of both byte arrays formatted as a byte array
    */
   def xor_ba(ba1: Array[Byte], ba2: Array[Byte]): Array[Byte] = {
-    if (ba1.length != ba2.length) {
-      println(ba1.length)
-      println(ba2.length)
-      throw new RuntimeException("Can't xor two byte arrays of different lengths: |" + new String(ba1) + "|, |" + new String(ba2)+"|")
-    }
+    require(ba1.length == ba2.length, "Can't xor two byte arrays of different lengths: |" + ba1.mkString + "|, |" + ba2.mkString + "|")
+    for {
+      (i: Byte, j: Byte) <- ba1.zip(ba2)
+    } yield (i ^ j).toByte
+  }
+
+  def xor_ba(ba1: Vector[Byte], ba2: Vector[Byte]): Vector[Byte] = {
+    require(ba1.length == ba2.length, "Can't xor two byte arrays of different lengths: |" + ba1.mkString + "|, |" + ba2.mkString + "|")
     for {
       (i: Byte, j: Byte) <- ba1.zip(ba2)
     } yield (i ^ j).toByte
