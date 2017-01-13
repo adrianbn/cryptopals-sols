@@ -62,7 +62,7 @@ object challenge10 extends App {
     // Pad the plaintext with PKCS7
     val pt_ba: Array[Byte] = challenge9.pkcs7(plaintext.getBytes("UTF-8"), BLOCK_SIZE)
     // split plaintext in chunks of size block size
-    val chunks: List[Array[Byte]] = pt_ba.sliding(BLOCK_SIZE, BLOCK_SIZE).toList
+    val chunks: List[Array[Byte]] = pt_ba.grouped(BLOCK_SIZE).toList
     // Implement CBC encryption
     chunks.foldLeft(List(iv))((acc, c) =>
       acc ++
@@ -83,7 +83,7 @@ object challenge10 extends App {
 
   def do_cbc_dec(key: Array[Byte], ciphertext: Array[Byte]): Array[Byte] = {
     // split ciphertext in chunks of size block size
-    val ct_iv_chunks: List[Array[Byte]] = ciphertext.sliding(BLOCK_SIZE, BLOCK_SIZE).toList
+    val ct_iv_chunks: List[Array[Byte]] = ciphertext.grouped(BLOCK_SIZE).toList
     // Retrieve the IV from the ciphertext (first 16 bytes, first element of the list)
     val (iv: List[Array[Byte]], chunks: List[Array[Byte]]) = ct_iv_chunks.splitAt(1)
 
@@ -97,8 +97,8 @@ object challenge10 extends App {
       prev_chunk = if (index == 0) iv.head else chunks(index - 1)
     } yield challenge2.xor_ba(aes_chunks(index), prev_chunk)).flatten.toArray
 
-    // Remove PKCS7 padding from ciphertext
-    padded_pt.dropRight(padded_pt.last)
+    // Validate and Remove PKCS7 padding from ciphertext
+    challenge15.validatePKCS7(padded_pt)
   }
 
 
@@ -127,4 +127,6 @@ object challenge10 extends App {
   // Add the IV to the Ciphertext as their file doesn't come with it prepended
   val pt: Array[Byte] = cbc_decrypt(key, Array.fill[Byte](BLOCK_SIZE)(0) ++ ct)
   println(new String(pt))
+
+  //
 }
