@@ -27,14 +27,14 @@ object challenge2 extends App {
    * the XOR of both byte arrays formatted as a byte array
    */
   def xor_ba(ba1: Array[Byte], ba2: Array[Byte]): Array[Byte] = {
-    require(ba1.length == ba2.length, "Can't xor two byte arrays of different lengths: |" + ba1.mkString + "|, |" + ba2.mkString + "|")
+    require(ba1.length == ba2.length, "Can't xor two byte arrays of different lengths: |" + new String(ba1) + "|, |" + new String(ba2) + "|")
     for {
       (i: Byte, j: Byte) <- ba1.zip(ba2)
     } yield (i ^ j).toByte
   }
 
   def xor_ba(ba1: Vector[Byte], ba2: Vector[Byte]): Vector[Byte] = {
-    require(ba1.length == ba2.length, "Can't xor two byte arrays of different lengths: |" + ba1.mkString + "|, |" + ba2.mkString + "|")
+    require(ba1.length == ba2.length, "Can't xor two byte arrays of different lengths: |" + new String(ba1.toArray) + "|, |" + new String(ba2.toArray) + "|")
     for {
       (i: Byte, j: Byte) <- ba1.zip(ba2)
     } yield (i ^ j).toByte
