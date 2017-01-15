@@ -38,8 +38,23 @@ object challenge10 extends App {
     cipher.doFinal(bytes)
   }
 
+  def ecb_encrypt(key_str: String, plaintext: Array[Byte]): Array[Byte] = {
+    // stretch key if necessary
+    val key: Array[Byte] = stretch_key(key_str)
+    // ECB encrypt
+    do_ecb(key, plaintext, Cipher.ENCRYPT_MODE)
+  }
+
+  def ecb_encrypt(key: SecretKey, plaintext: Array[Byte]): Array[Byte] = {
+    do_ecb(key.getEncoded, plaintext, Cipher.ENCRYPT_MODE)
+  }
+
   def ecb_encrypt(key: Array[Byte], plaintext: Array[Byte]): Array[Byte] = {
     do_ecb(key, plaintext, Cipher.ENCRYPT_MODE)
+  }
+
+  def ecb_decrypt(key: SecretKey, ciphertext: Array[Byte]): Array[Byte] = {
+    do_ecb(key.getEncoded, ciphertext, Cipher.DECRYPT_MODE)
   }
 
   def ecb_decrypt(key: Array[Byte], ciphertext: Array[Byte]): Array[Byte] = {
